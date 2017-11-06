@@ -1,1 +1,6 @@
+# data
 /src/main/resources/
+
+# intellij/sbt related files
+/.idea/
+target/
