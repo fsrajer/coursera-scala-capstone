@@ -1,6 +1,7 @@
 package observatory
 
 import org.junit.runner.RunWith
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
@@ -11,4 +12,5 @@ class CapstoneSuite
     with ManipulationTest
     with Visualization2Test
     with Interaction2Test
+    with BeforeAndAfterAll
 
