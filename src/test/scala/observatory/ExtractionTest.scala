@@ -51,4 +51,28 @@ trait ExtractionTest extends FunSuite {
 
     assert(computed.sameElements(expected))
   }
+
+  test("average empty") {
+    val records = Extraction.spark.sparkContext.parallelize(List[(LocalDate, Location, Temperature)]())
+
+    var computed = Extraction.locationYearlyAverageRecordsSpark(records).collect()
+    val expected = Array[(Location, Temperature)]()
+
+    assert(computed.sameElements(expected))
+  }
+
+  test("average non-empty") {
+    val year = 4
+    val records = Extraction.spark.sparkContext.parallelize(
+      List[(LocalDate, Location, Temperature)]
+        ((LocalDate.of(year, 1, 1), Location(1, 2), 4),
+          (LocalDate.of(year, 4, 1), Location(1, 2), 5),
+          (LocalDate.of(year, 1, 5), Location(1, 2), 6),
+          (LocalDate.of(year, 1, 1), Location(2, 2), 4)))
+
+    var computed = Extraction.locationYearlyAverageRecordsSpark(records).collect().toSet
+    val expected = Set[(Location, Temperature)]((Location(1, 2), 5), (Location(2, 2), 4))
+
+    assert(computed == expected)
+  }
 }

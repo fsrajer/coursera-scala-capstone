@@ -33,7 +33,7 @@ object Extraction {
     * @return A sequence containing, for each location, the average temperature over the year.
     */
   def locationYearlyAverageRecords(records: Iterable[(LocalDate, Location, Temperature)]): Iterable[(Location, Temperature)] = {
-    ???
+    locationYearlyAverageRecordsSpark(spark.sparkContext.parallelize(records.toSeq)).collect().toSeq
   }
 
   /**
@@ -81,4 +81,15 @@ object Extraction {
   def fahrenheitToCelsius(fahrenheit: Temperature): Temperature =
     (fahrenheit - 32) / 1.8
 
+  /**
+    * @param records A sequence containing triplets (date, location, temperature)
+    * @return A sequence containing, for each location, the average temperature over the year.
+    */
+  def locationYearlyAverageRecordsSpark(records: RDD[(LocalDate, Location, Temperature)]): RDD[(Location, Temperature)] = {
+    records
+      .groupBy(_._2)
+      .mapValues(entries => entries.map(entry => (entry._3, 1)))
+      .mapValues(_.reduce((v1, v2) => (v1._1 + v2._1, v1._2 + v2._2)))
+      .mapValues({case (temp, cnt) => temp / cnt})
+  }
 }
