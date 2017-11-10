@@ -36,4 +36,27 @@ trait VisualizationTest extends FunSuite with Checkers with BeforeAndAfterAll {
     assert(computed2 == expected2)
   }
 
+  test("color interp one val") {
+    val cols = List[(Temperature, Color)]((1, Color(2, 2, 2)))
+    val value = 2
+
+    var computed = Visualization.interpolateColor(cols, value)
+    val expected = Color(2, 2, 2)
+    assert(computed == expected)
+  }
+
+  test("color interp two vals") {
+    val cols = List[(Temperature, Color)]((1, Color(2, 2, 2)), (-1, Color(4, 4, 4)))
+
+    var value = 1
+    var computed = Visualization.interpolateColor(cols, value)
+    var expected = Color(2, 2, 2)
+    assert(computed == expected)
+
+    value = 0
+    computed = Visualization.interpolateColor(cols, value)
+    expected = Color(3, 3, 3)
+    assert(computed == expected)
+  }
+
 }
