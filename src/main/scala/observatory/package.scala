@@ -10,4 +10,6 @@ package object observatory {
       .appName("Observatory")
       .config("spark.master", "local")
       .getOrCreate()
+
+  val earthRadius = 6371 // km
 }

@@ -22,10 +22,28 @@ object Visualization {
   /**
     * @param a First location
     * @param b Second location
+    * @return Are the locations antipodes?
+    */
+  def areAntipodes(a: Location, b: Location): Boolean = {
+    a.lat == -b.lat && (a.lon == b.lon || a.lon == -b.lon)
+  }
+
+  /**
+    * @param a First location
+    * @param b Second location
     * @return Great-circle distance between a and b
     */
   def computeDist(a: Location, b: Location): Double = {
-    ???
+    if(a == b){
+      0
+    }else if(areAntipodes(a, b)){
+      Math.PI
+    } else {
+      val delta_lon = Math.abs(a.lon - b.lon)
+      val delta_sigma = Math.acos(
+        Math.sin(a.lat) * Math.sin(b.lat) + Math.cos(a.lat) * Math.cos(b.lat) * Math.cos(delta_lon))
+      earthRadius * delta_sigma
+    }
   }
 
   /**

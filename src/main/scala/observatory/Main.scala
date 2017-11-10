@@ -8,7 +8,7 @@ object Main extends App {
 
   val temps = Extraction.locateTemperatures(1975, "/stations.csv", "/1975.csv")
   val tempsAvg = Extraction.locationYearlyAverageRecords(temps)
-  val currTemp = Visualization.predictTemperature(tempsAvg, Location(0, 0))
+  val currTemp = Visualization.predictTemperature(tempsAvg, Location(0, 1.5))
 
   println(temps)
 
