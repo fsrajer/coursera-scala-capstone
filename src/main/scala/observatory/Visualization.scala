@@ -72,7 +72,30 @@ object Visualization {
     * @return The color that corresponds to `value`, according to the color scale defined by `points`
     */
   def interpolateColor(points: Iterable[(Temperature, Color)], value: Temperature): Color = {
-    ???
+    val sameCol = points.filter(_._1 == value)
+    if(sameCol.nonEmpty){
+      sameCol.head._2
+    }else{
+      val smaller = points.filter(_._1 < value)
+      val bigger = points.filter(_._1 > value)
+      if (smaller.isEmpty) {
+        bigger.minBy(_._1)._2
+      }else {
+        val a = smaller.maxBy(_._1)
+        if (bigger.isEmpty) {
+          a._2
+        }else {
+          val b = bigger.minBy(_._1)
+          val wa = 1 / Math.abs(a._1 - value)
+          val wb = 1 / Math.abs(b._1 - value)
+          def interp(x: Int, y: Int): Int =
+            ((wa * x + wb * y) / (wa + wb)).round.toInt
+          val ca = a._2
+          val cb = b._2
+          Color(interp(ca.red, cb.red), interp(ca.green, cb.green), interp(ca.blue, cb.blue))
+        }
+      }
+    }
   }
 
   /**
