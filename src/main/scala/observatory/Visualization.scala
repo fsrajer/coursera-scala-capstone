@@ -120,7 +120,7 @@ object Visualization {
   def transformCoord(coord: (Int, Int)): Location = {
     val lon = (coord._2 - width/2) * (360 / width)
     val lat = -(coord._1 - height/2) * (180 / height)
-    Location(lon, lat)
+    Location(lat, lon)
   }
 }
 
