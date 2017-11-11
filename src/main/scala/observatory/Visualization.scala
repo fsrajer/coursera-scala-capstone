@@ -55,8 +55,9 @@ object Visualization {
       val delta_lon = math.toRadians(math.abs(a.lon - b.lon))
       val alat = math.toRadians(a.lat)
       val blat = math.toRadians(b.lat)
-      val delta_sigma = math.acos(
-        math.sin(alat) * math.sin(blat) + math.cos(alat) * math.cos(blat) * math.cos(delta_lon))
+      val delta_lat = math.abs(alat - blat)
+      val delta_sigma =   2 * math.asin(math.sqrt( math.pow(math.sin(delta_lat/2), 2) +
+        math.cos(alat) * math.cos(blat) * math.pow(math.sin(delta_lon/2), 2) ))
       earthRadius * delta_sigma
     }
   }
