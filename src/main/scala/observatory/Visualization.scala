@@ -16,7 +16,7 @@ object Visualization {
     * @return The predicted temperature at `location`
     */
   def predictTemperature(temperatures: Iterable[(Location, Temperature)], location: Location): Temperature = {
-    val dists = temperatures.map(entry => (computeDist(entry._1, location), entry._2))
+    val dists = temperatures.map(entry => (computeDist(location, entry._1), entry._2))
 
     val min = dists.reduce((a, b) => if(a._1 < b._1) a else b)
     if(min._1 < 1) {
@@ -24,7 +24,7 @@ object Visualization {
       min._2
     }else{
       // interpolate
-      val weights = dists.map(entry => (1 / Math.pow(entry._1, p_param), entry._2))
+      val weights = dists.map(entry => (1 / math.pow(entry._1, p_param), entry._2))
       val sum = weights.map(_._1).sum
       weights.map(entry => (entry._1 * entry._2) / sum).sum
     }
@@ -48,11 +48,13 @@ object Visualization {
     if(a == b){
       0
     }else if(areAntipodes(a, b)){
-      Math.PI
+      math.Pi
     } else {
-      val delta_lon = Math.abs(a.lon - b.lon)
-      val delta_sigma = Math.acos(
-        Math.sin(a.lat) * Math.sin(b.lat) + Math.cos(a.lat) * Math.cos(b.lat) * Math.cos(delta_lon))
+      val delta_lon = math.abs(a.lon - b.lon) * math.Pi / 180
+      val alat = a.lat * math.Pi / 180
+      val blat = b.lat * math.Pi / 180
+      val delta_sigma = math.acos(
+        math.sin(alat) * math.sin(blat) + math.cos(alat) * math.cos(blat) * math.cos(delta_lon))
       earthRadius * delta_sigma
     }
   }
@@ -77,8 +79,8 @@ object Visualization {
           a._2
         }else {
           val b = bigger.minBy(_._1)
-          val wa = 1 / Math.abs(a._1 - value)
-          val wb = 1 / Math.abs(b._1 - value)
+          val wa = 1 / math.abs(a._1 - value)
+          val wb = 1 / math.abs(b._1 - value)
           def interp(x: Int, y: Int): Int =
             ((wa * x + wb * y) / (wa + wb)).round.toInt
           val ca = a._2
