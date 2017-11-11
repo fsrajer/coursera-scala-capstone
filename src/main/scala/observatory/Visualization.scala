@@ -52,9 +52,9 @@ object Visualization {
     }else if(areAntipodes(a, b)){
       math.Pi
     } else {
-      val delta_lon = math.abs(a.lon - b.lon) * math.Pi / 180
-      val alat = a.lat * math.Pi / 180
-      val blat = b.lat * math.Pi / 180
+      val delta_lon = math.toRadians(math.abs(a.lon - b.lon))
+      val alat = math.toRadians(a.lat)
+      val blat = math.toRadians(b.lat)
       val delta_sigma = math.acos(
         math.sin(alat) * math.sin(blat) + math.cos(alat) * math.cos(blat) * math.cos(delta_lon))
       earthRadius * delta_sigma
