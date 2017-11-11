@@ -28,7 +28,7 @@ object Visualization {
       // interpolate
       val weights = dists.map(entry => (1 / math.pow(entry._1, p_param), entry._2))
       val sum = weights.map(_._1).sum
-      weights.map(entry => (entry._1 * entry._2) / sum).sum
+      weights.map(entry => entry._1 * entry._2).sum  / sum
     }
   }
 
