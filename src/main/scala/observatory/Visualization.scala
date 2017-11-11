@@ -1,7 +1,7 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
-import org.apache.spark.rdd.RDD
+import scala.math.{abs, sin, cos, sqrt, pow, toRadians, asin}
 
 /**
   * 2nd milestone: basic visualization
@@ -26,9 +26,9 @@ object Visualization {
       min._2
     }else{
       // interpolate
-      val weights = dists.map(entry => (1 / math.pow(entry._1, p_param), entry._2))
-      val sum = weights.map(_._1).sum
-      weights.map(entry => entry._1 * entry._2).sum  / sum
+      val weights = dists.map(entry => (1 / pow(entry._1, p_param), entry._2))
+      val normalizer = weights.map(_._1).sum
+      weights.map(entry => entry._1 * entry._2).sum  / normalizer
     }
   }
 
@@ -52,12 +52,11 @@ object Visualization {
     }else if(areAntipodes(a, b)){
       math.Pi
     } else {
-      val delta_lon = math.toRadians(math.abs(a.lon - b.lon))
-      val alat = math.toRadians(a.lat)
-      val blat = math.toRadians(b.lat)
-      val delta_lat = math.abs(alat - blat)
-      val delta_sigma =   2 * math.asin(math.sqrt( math.pow(math.sin(delta_lat/2), 2) +
-        math.cos(alat) * math.cos(blat) * math.pow(math.sin(delta_lon/2), 2) ))
+      val delta_lon = toRadians(abs(a.lon - b.lon))
+      val alat = toRadians(a.lat)
+      val blat = toRadians(b.lat)
+      val delta_lat = abs(alat - blat)
+      val delta_sigma =   2 * asin(sqrt( pow(sin(delta_lat/2), 2) + cos(alat) * cos(blat) * pow(sin(delta_lon/2), 2) ))
       earthRadius * delta_sigma
     }
   }
@@ -68,29 +67,28 @@ object Visualization {
     * @return The color that corresponds to `value`, according to the color scale defined by `points`
     */
   def interpolateColor(points: Iterable[(Temperature, Color)], value: Temperature): Color = {
-    val sameCol = points.filter(_._1 == value)
-    if(sameCol.nonEmpty){
-      sameCol.head._2
-    }else{
-      val smaller = points.filter(_._1 < value)
-      val bigger = points.filter(_._1 > value)
-      if (smaller.isEmpty) {
-        bigger.minBy(_._1)._2
-      }else {
-        val a = smaller.maxBy(_._1)
-        if (bigger.isEmpty) {
-          a._2
+    val sameCol = points.find(_._1 == value)
+    sameCol match {
+      case Some((_, col)) => col
+      case _ =>
+        val (smaller, bigger) = points.partition(_._1 < value)
+        if (smaller.isEmpty) {
+          bigger.minBy(_._1)._2
         }else {
-          val b = bigger.minBy(_._1)
-          val wa = 1 / math.abs(a._1 - value)
-          val wb = 1 / math.abs(b._1 - value)
-          def interp(x: Int, y: Int): Int =
-            ((wa * x + wb * y) / (wa + wb)).round.toInt
-          val ca = a._2
-          val cb = b._2
-          Color(interp(ca.red, cb.red), interp(ca.green, cb.green), interp(ca.blue, cb.blue))
+          val a = smaller.maxBy(_._1)
+          if (bigger.isEmpty) {
+            a._2
+          }else {
+            val b = bigger.minBy(_._1)
+            val wa = 1 / abs(a._1 - value)
+            val wb = 1 / abs(b._1 - value)
+            def interp(x: Int, y: Int): Int =
+              ((wa * x + wb * y) / (wa + wb)).round.toInt
+            val ca = a._2
+            val cb = b._2
+            Color(interp(ca.red, cb.red), interp(ca.green, cb.green), interp(ca.blue, cb.blue))
+          }
         }
-      }
     }
   }
 
