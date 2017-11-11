@@ -44,15 +44,6 @@ trait VisualizationTest
     assert(computed < 4)
   }
 
-  test("temperatures interpolation test2") {
-    val temps = List[(Location, Temperature)]((Location(90, -180), 10),(Location(80, -100), 20),
-      (Location(0, 0), 20),(Location(-30, 50), 20))
-
-    var location = Location(88, -176)
-    var computed = Visualization.predictTemperature(temps, location)
-    assert(computed < 15)
-  }
-
   test("check properties") {
     check(new QuickCheckVisualization)
   }
