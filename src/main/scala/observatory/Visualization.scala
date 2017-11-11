@@ -8,7 +8,7 @@ import org.apache.spark.rdd.RDD
   */
 object Visualization {
 
-  val p_param = 2
+  val p_param = 3
   val width = 360
   val height = 180
 
