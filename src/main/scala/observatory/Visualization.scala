@@ -9,6 +9,8 @@ import org.apache.spark.rdd.RDD
 object Visualization {
 
   val p_param = 2
+  val width = 360
+  val height = 180
 
   /**
     * @param temperatures Known temperatures: pairs containing a location and the temperature at this location
@@ -97,8 +99,27 @@ object Visualization {
     * @return A 360×180 image where each pixel shows the predicted temperature at its location
     */
   def visualize(temperatures: Iterable[(Location, Temperature)], colors: Iterable[(Temperature, Color)]): Image = {
-    ???
+    val coords = for {
+      i <- 0 until height
+      j <- 0 until width
+    } yield (i, j)
+    val pixels = coords.par
+      .map(transformCoord)
+      .map(predictTemperature(temperatures, _))
+      .map(interpolateColor(colors, _))
+      .map(col => Pixel(col.red, col.green, col.blue, 255))
+      .toArray
+    Image(width, height, pixels)
   }
 
+  /**
+    * @param coord Pixel coordinates
+    * @return Latitude and longitude
+    */
+  def transformCoord(coord: (Int, Int)): Location = {
+    val lon = (coord._2 - width/2) * (360 / width)
+    val lat = -(coord._1 - height/2) * (180 / height)
+    Location(lon, lat)
+  }
 }
 
