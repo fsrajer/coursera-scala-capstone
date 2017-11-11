@@ -16,7 +16,18 @@ object Visualization {
     * @return The predicted temperature at `location`
     */
   def predictTemperature(temperatures: Iterable[(Location, Temperature)], location: Location): Temperature = {
-    predictTemperatureSpark(spark.sparkContext.parallelize(temperatures.toSeq), location)
+    val dists = temperatures.map(entry => (computeDist(entry._1, location), entry._2))
+
+    val min = dists.reduce((a, b) => if(a._1 < b._1) a else b)
+    if(min._1 < 1) {
+      // a close enough station (< 1km), take its temperature
+      min._2
+    }else{
+      // interpolate
+      val weights = dists.map(entry => (1 / Math.pow(entry._1, p_param), entry._2))
+      val sum = weights.map(_._1).sum
+      weights.map(entry => (entry._1 * entry._2) / sum).sum
+    }
   }
 
   /**
@@ -43,26 +54,6 @@ object Visualization {
       val delta_sigma = Math.acos(
         Math.sin(a.lat) * Math.sin(b.lat) + Math.cos(a.lat) * Math.cos(b.lat) * Math.cos(delta_lon))
       earthRadius * delta_sigma
-    }
-  }
-
-  /**
-    * @param temperatures Known temperatures: pairs containing a location and the temperature at this location
-    * @param location Location where to predict the temperature
-    * @return The predicted temperature at `location`
-    */
-  def predictTemperatureSpark(temperatures: RDD[(Location, Temperature)], location: Location): Temperature = {
-    val dists = temperatures.map(entry => (computeDist(entry._1, location), entry._2)).cache()
-
-    val min = dists.reduce((a, b) => if(a._1 < b._1) a else b)
-    if(min._1 < 1) {
-      // a close enough station (< 1km), take its temperature
-      min._2
-    }else{
-      // interpolate
-      val weights = dists.map(entry => (1 / Math.pow(entry._1, p_param), entry._2)).cache()
-      val sum = weights.keys.sum()
-      weights.map(entry => (entry._1 * entry._2) / sum).sum()
     }
   }
 
