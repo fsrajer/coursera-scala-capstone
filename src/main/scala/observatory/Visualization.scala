@@ -38,7 +38,7 @@ object Visualization {
     * @return Are the locations antipodes?
     */
   def areAntipodes(a: Location, b: Location): Boolean = {
-    a.lat == -b.lat && (a.lon == b.lon || a.lon == -b.lon)
+    (a.lat == -b.lat) && (abs(a.lon - b.lon) == 180)
   }
 
   /**
@@ -50,7 +50,7 @@ object Visualization {
     if(a == b){
       0
     }else if(areAntipodes(a, b)){
-      math.Pi
+      earthRadius * math.Pi
     } else {
       val delta_lon = toRadians(abs(a.lon - b.lon))
       val alat = toRadians(a.lat)

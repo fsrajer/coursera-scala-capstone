@@ -11,11 +11,13 @@ trait VisualizationTest
   with BeforeAndAfterAll {
 
   test("antipodes simple test") {
-    val a = Location(5, 10)
-    val b = Location(-5, 10)
+    val a = Location(5, 0)
+    val b = Location(-5, 180)
+    val c = Location(-5, -180)
 
     assert(Visualization.areAntipodes(a, b))
-    assert(!Visualization.areAntipodes(a, a))
+    assert(Visualization.areAntipodes(a, c))
+    assert(!Visualization.areAntipodes(b, c))
   }
 
   test("distance simple test") {
