@@ -8,7 +8,7 @@ import scala.math.{abs, sin, cos, sqrt, pow, toRadians, asin}
   */
 object Visualization {
 
-  val p_param = 3
+  val p_param = 6
   val width = 360
   val height = 180
 
