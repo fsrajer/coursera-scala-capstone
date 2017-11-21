@@ -63,7 +63,12 @@ object Interaction {
     yearlyData: Iterable[(Year, Data)],
     generateImage: (Year, Tile, Data) => Unit
   ): Unit = {
-    ???
+    val tiles = for {
+      zoom <- 0 until 4
+      x <- 0 until pow(2, zoom).toInt
+      y <- 0 until pow(2, zoom).toInt
+      yearData <- yearlyData
+    } yield generateImage(yearData._1, Tile(x, y, zoom), yearData._2)
   }
 
 }
