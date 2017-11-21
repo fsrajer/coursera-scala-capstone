@@ -1,12 +1,20 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
-import math.{pow, atan, sinh, Pi, toDegrees}
+
+import math.{Pi, atan, pow, sinh, toDegrees}
+import Visualization.{interpolateColor, predictTemperature, transformCoord}
+
+import scala.collection.GenSeq
 
 /**
   * 3rd milestone: interactive visualization
   */
 object Interaction {
+
+  val width = 256
+  val height = 256
+  val alpha = 127
 
   /**
     * @param tile Tile coordinates
@@ -25,7 +33,23 @@ object Interaction {
     * @return A 256×256 image showing the contents of the given tile
     */
   def tile(temperatures: Iterable[(Location, Temperature)], colors: Iterable[(Temperature, Color)], tile: Tile): Image = {
-    ???
+    val offX = (tile.x * pow(2, 8)).toInt
+    val offY = (tile.y * pow(2, 8)).toInt
+    val offZ = tile.zoom
+    val coords = for {
+      i <- 0 until height
+      j <- 0 until width
+    } yield (i, j)
+
+    val pixels = coords.par
+      .map({case (y, x) => Tile(x + offX, y + offY, 8 + offZ)})
+      .map(tileLocation)
+      .map(predictTemperature(temperatures, _))
+      .map(interpolateColor(colors, _))
+      .map(col => Pixel(col.red, col.green, col.blue, alpha))
+      .toArray
+
+    Image(width, height, pixels)
   }
 
   /**
