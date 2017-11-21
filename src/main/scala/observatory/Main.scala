@@ -8,7 +8,7 @@ object Main extends App {
 
   Logger.getLogger("org.apache.spark").setLevel(Level.WARN)
 
-  val temps = Extraction.locateTemperatures(1975, "/stations.csv", "/1975.csv")
+  val temps = Extraction.locateTemperatures(2015, "/stations.csv", "/1975.csv")
   val tempsAvg = Extraction.locationYearlyAverageRecords(temps)
 
   val tempToCol = List[(Temperature, Color)]((60, Color(255, 255, 255)), (32, Color(255, 0, 0)),
