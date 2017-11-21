@@ -1,6 +1,7 @@
 package observatory
 
 import com.sksamuel.scrimage.{Image, Pixel}
+import math.{pow, atan, sinh, Pi, toDegrees}
 
 /**
   * 3rd milestone: interactive visualization
@@ -12,7 +13,9 @@ object Interaction {
     * @return The latitude and longitude of the top-left corner of the tile, as per http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
     */
   def tileLocation(tile: Tile): Location = {
-    ???
+    val lat = toDegrees(atan(sinh(Pi - (tile.y * 2 * Pi) / pow(2, tile.zoom))))
+    val lon = (tile.x * 360) / pow(2, tile.zoom) - 180
+    Location(lat, lon)
   }
 
   /**
