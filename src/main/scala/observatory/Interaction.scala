@@ -12,7 +12,7 @@ import scala.collection.GenSeq
   */
 object Interaction {
 
-  val power: Int = 8
+  val power: Int = 7
   val width: Int = pow(2, power).toInt
   val height: Int = pow(2, power).toInt
   val alpha: Int = 127
