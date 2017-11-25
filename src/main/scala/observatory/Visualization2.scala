@@ -23,7 +23,11 @@ object Visualization2 {
     d10: Temperature,
     d11: Temperature
   ): Temperature = {
-    ???
+    val x = point.x
+    val y = point.y
+    val x_1 = 1 - point.x
+    val y_1 = 1 - point.y
+    d00 * x_1 * y_1 + d10 * x * y_1 + d01 * x_1 * y + d11 * x * y
   }
 
   /**
