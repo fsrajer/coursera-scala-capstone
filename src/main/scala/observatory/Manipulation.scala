@@ -5,13 +5,40 @@ package observatory
   */
 object Manipulation {
 
+  class Grid {
+    private var temps: Array[Temperature] = new Array[Temperature](360*180)
+
+    private def address(lat: Int, lon: Int): Int = {
+      val x = lon + 180
+      val y = lat + 89
+      y * 360 + x
+    }
+
+    def set(lat: Int, lon: Int, temp: Temperature): Unit = {
+      temps(address(lat, lon)) = temp
+    }
+
+    def get(lat: Int, lon: Int): Temperature = {
+      temps(address(lat, lon))
+    }
+
+    def precompute(temps: Iterable[(Location, Temperature)]): Unit = {
+      for {
+        lat <- Range(90, -90, -1)
+        lon <- -180 until 180
+      } set(lat, lon, Visualization.predictTemperature(temps, Location(lat, lon)))
+    }
+  }
+
   /**
     * @param temperatures Known temperatures
     * @return A function that, given a latitude in [-89, 90] and a longitude in [-180, 179],
     *         returns the predicted temperature at this location
     */
   def makeGrid(temperatures: Iterable[(Location, Temperature)]): GridLocation => Temperature = {
-    ???
+    val grid = new Grid
+    grid.precompute(temperatures)
+    (gl: GridLocation) => grid.get(gl.lat, gl.lon)
   }
 
   /**
