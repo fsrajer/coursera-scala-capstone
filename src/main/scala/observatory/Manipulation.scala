@@ -28,6 +28,16 @@ object Manipulation {
         lon <- -180 until 180
       } set(lat, lon, Visualization.predictTemperature(temps, Location(lat, lon)))
     }
+
+    def +=(that: Grid): Grid = {
+      temps.indices.foreach(idx => this.temps(idx) += that.temps(idx))
+      this
+    }
+
+    def /=(denominator: Double): Grid = {
+      temps = temps.map(_ / denominator)
+      this
+    }
   }
 
   /**
@@ -36,9 +46,14 @@ object Manipulation {
     *         returns the predicted temperature at this location
     */
   def makeGrid(temperatures: Iterable[(Location, Temperature)]): GridLocation => Temperature = {
+    val grid = makeGridInstance(temperatures)
+    (gl: GridLocation) => grid.get(gl.lat, gl.lon)
+  }
+
+  def makeGridInstance(temperatures: Iterable[(Location, Temperature)]): Grid = {
     val grid = new Grid
     grid.precompute(temperatures)
-    (gl: GridLocation) => grid.get(gl.lat, gl.lon)
+    grid
   }
 
   /**
@@ -47,7 +62,11 @@ object Manipulation {
     * @return A function that, given a latitude and a longitude, returns the average temperature at this location
     */
   def average(temperaturess: Iterable[Iterable[(Location, Temperature)]]): GridLocation => Temperature = {
-    ???
+    val grid = temperaturess
+      .map(makeGridInstance)
+      .reduce((a: Grid, b: Grid) => a += b)
+    grid /= temperaturess.size
+    (gl: GridLocation) => grid.get(gl.lat, gl.lon)
   }
 
   /**
