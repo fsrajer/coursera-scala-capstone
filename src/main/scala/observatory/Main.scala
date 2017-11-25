@@ -30,7 +30,7 @@ object Main extends App {
     Files.createDirectories(Paths.get(zoomdir))
 
     val img = Interaction.tile(data, tempToCol, tile)
-    img.scale(2d).output(new File(fn))
+    img.output(new File(fn))
   }
 
   val data = List[(Year, Iterable[(Location, Temperature)])]((2015, tempsAvg))
