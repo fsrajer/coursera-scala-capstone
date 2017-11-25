@@ -70,7 +70,7 @@ object Manipulation {
     * @return A function that, given a latitude and a longitude, returns the average temperature at this location
     */
   def average(temperaturess: Iterable[Iterable[(Location, Temperature)]]): GridLocation => Temperature = {
-    val grid = temperaturess
+    val grid = temperaturess.par
       .map(makeGridInstance)
       .reduce((a: Grid, b: Grid) => a += b)
     grid /= temperaturess.size

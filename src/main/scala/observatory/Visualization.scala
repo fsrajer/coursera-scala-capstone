@@ -18,7 +18,7 @@ object Visualization {
     * @return The predicted temperature at `location`
     */
   def predictTemperature(temperatures: Iterable[(Location, Temperature)], location: Location): Temperature = {
-    val dists = temperatures.par.map(entry => (computeDist(location, entry._1), entry._2))
+    val dists = temperatures.map(entry => (computeDist(location, entry._1), entry._2))
 
     val min = dists.reduce((a, b) => if(a._1 < b._1) a else b)
     if(min._1 < 1) {
