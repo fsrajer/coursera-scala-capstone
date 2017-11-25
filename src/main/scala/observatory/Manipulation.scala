@@ -38,6 +38,14 @@ object Manipulation {
       temps = temps.map(_ / denominator)
       this
     }
+
+    def -=(that: GridLocation => Temperature): Grid = {
+      for {
+        lat <- Range(90, -90, -1)
+        lon <- -180 until 180
+      } set(lat, lon, get(lat, lon) - that(GridLocation(lat, lon)))
+      this
+    }
   }
 
   /**
@@ -75,7 +83,9 @@ object Manipulation {
     * @return A grid containing the deviations compared to the normal temperatures
     */
   def deviation(temperatures: Iterable[(Location, Temperature)], normals: GridLocation => Temperature): GridLocation => Temperature = {
-    ???
+    val grid = makeGridInstance(temperatures)
+    grid -= normals
+    (gl: GridLocation) => grid.get(gl.lat, gl.lon)
   }
 
 
