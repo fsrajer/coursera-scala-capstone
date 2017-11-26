@@ -6,6 +6,8 @@ import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 
+import Extraction.spark
+
 trait ExtractionTest extends FunSuite {
 
   test("empty all") {
