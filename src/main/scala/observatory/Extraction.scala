@@ -11,6 +11,13 @@ import org.apache.spark.sql.SparkSession
   */
 object Extraction {
 
+  val spark: SparkSession =
+    SparkSession
+      .builder()
+      .appName("Observatory")
+      .config("spark.master", "local")
+      .getOrCreate()
+
   /**
     * @param year             Year number
     * @param stationsFile     Path of the stations resource file to use (e.g. "/stations.csv")
