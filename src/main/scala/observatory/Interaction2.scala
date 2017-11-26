@@ -17,7 +17,9 @@ object Interaction2 {
     * @return The available layers of the application
     */
   def availableLayers: Seq[Layer] = {
-    List(Layer(LayerName.Temperatures, tempToCol, Range(1975, 1989)))
+    List(
+      Layer(LayerName.Temperatures, tempToCol, Range(1975, 2015)),
+      Layer(LayerName.Deviations, devToCol, Range(1990, 2015)))
   }
 
   /**
