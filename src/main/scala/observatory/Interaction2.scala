@@ -5,11 +5,19 @@ package observatory
   */
 object Interaction2 {
 
+  private val tempToCol = List[(Temperature, Color)]((60, Color(255, 255, 255)), (32, Color(255, 0, 0)),
+    (12, Color(255, 255, 0)), (0, Color(0, 255, 255)), (-15, Color(0, 0, 255)), (-27, Color(255, 0, 255)),
+    (-50, Color(33, 0, 107)), (-60, Color(0, 0, 0)))
+
+  private val devToCol = List[(Temperature, Color)]((7, Color(0, 0, 0)), (4, Color(255, 0, 0)),
+    (2, Color(255, 255, 0)), (0, Color(255, 255, 255)), (-2, Color(0, 255, 255)), (-7, Color(0, 0, 255)))
+
+
   /**
     * @return The available layers of the application
     */
   def availableLayers: Seq[Layer] = {
-    ???
+    List(Layer(LayerName.Temperatures, tempToCol, Range(1975, 1989)))
   }
 
   /**
